@@ -11,15 +11,17 @@ import (
 func main() {
 	cmd := &cli.Command{
 		Name:    "count all",
+		Usage: "Count file metric: bytes (default is bytes).",
 		Version: "v0.0.1",
 
 		Flags: []cli.Flag{
-			&cli.StringFlag{
+			&cli.BoolFlag{
 				Aliases: []string{"b"},
 				Name:    "bytes",
+				Value: true,
 				Usage:   "count bytes",
 			},
-			&cli.StringFlag{
+			&cli.BoolFlag{
 				Aliases: []string{"w"},
 				Name:  "words",
 				Usage: "count words",
