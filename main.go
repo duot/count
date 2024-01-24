@@ -8,6 +8,22 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+func countCharacters(fileName string) (int, error) {
+	f, err := os.Open(fileName)
+	if err != nil {
+		return 0, err
+	}
+	defer f.Close()
+
+	s := bufio.NewScanner(f)
+	s.Split(bufio.ScanRunes)
+	chars := 0
+	for s.Scan() {
+		chars++
+	}
+	return chars, nil
+}
+
 func main() {
 	cmd := &cli.Command{
 		Name:    "count all",
@@ -16,6 +32,20 @@ func main() {
 
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
+				Aliases: []string{"c"},
+				Name:    "characters",
+				Value:   true,
+				Usage:   "count characters",
+				Action: func(ctx context.Context, c *cli.Command, b bool) error {
+					fileName := c.Args().Get(0)
+					count, err := countCharacters(fileName)
+					if err != nil {
+						return err
+					}
+					fmt.Fprintln(os.Stdout, "\t", count, fileName)
+					return nil
+				},
+			},
 				Aliases: []string{"b"},
 				Name:    "bytes",
 				Value: true,
