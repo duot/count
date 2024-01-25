@@ -38,6 +38,11 @@ func Lines(f io.Reader) (int, error) {
 }
 
 func Count(fileName string, counter Counter) (int, error) {
+	if fileName == "" {
+		f := os.Stdin
+		return counter(f)
+	}
+
 	f, err := os.Open(fileName)
 	if err != nil {
 		return 0, err

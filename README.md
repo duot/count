@@ -31,10 +31,6 @@ GLOBAL OPTIONS:
 
 Run `go build` and `do install` to install on the local go bin.
 
-## todo
-
-- [ ] support reading from std input
-
 ## License
 
 See [`LICENSE`](./LICENSE)

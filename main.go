@@ -74,14 +74,6 @@ func main() {
 			},
 		},
 		Action: func(_ context.Context, c *cli.Command) error {
-			if c.Bool("bytes") {
-				fileName := c.Args().Get(0)
-				n, err := Count(fileName, Bytes)
-				if err != nil {
-					return err
-				}
-				fmt.Fprintln(os.Stdout, "\t", n, fileName)
-			}
 			return nil
 		},
 	}
