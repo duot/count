@@ -33,9 +33,7 @@ Run `go build` and `do install` to install on the local go bin.
 
 ## todo
 
-- [ ] add test
 - [ ] fix default to bytes
-- [ ] extract functions to separate lib
 - [ ] support reading from std input
 
 ## License
