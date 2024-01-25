@@ -19,10 +19,10 @@ COMMANDS:
    help, h  Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --characters, -c  count characters (default: true)
-   --words, -w       count words (default: true)
-   --lines, -l       count lines (default: true)
    --bytes, -b       count bytes (default: true)
+   --characters, -c  count characters (default: false)
+   --words, -w       count words (default: false)
+   --lines, -l       count lines (default: false)
    --help, -h        show help (default: false)
    --version, -v     print the version (default: false)
 ```
@@ -33,7 +33,6 @@ Run `go build` and `do install` to install on the local go bin.
 
 ## todo
 
-- [ ] fix default to bytes
 - [ ] support reading from std input
 
 ## License

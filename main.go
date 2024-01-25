@@ -10,56 +10,11 @@ import (
 
 func main() {
 	cmd := &cli.Command{
-		Name:    "count all",
-		Usage:   "Count file metric: bytes (default is bytes), lines, words, chars.",
-		Version: "v0.0.1",
-
+		Name:                  "count all",
+		Usage:                 "Count file metric: bytes (default is bytes), lines, words, chars.",
+		Version:               "v0.0.1",
+		EnableShellCompletion: true,
 		Flags: []cli.Flag{
-			&cli.BoolFlag{
-				Aliases: []string{"c"},
-				Name:    "characters",
-				Value:   true,
-				Usage:   "count characters",
-				Action: func(ctx context.Context, c *cli.Command, b bool) error {
-					fileName := c.Args().Get(0)
-					n, err := Count(fileName, Chars)
-					if err != nil {
-						return err
-					}
-					fmt.Fprintln(os.Stdout, "\t", n, fileName)
-					return nil
-				},
-			},
-			&cli.BoolFlag{
-				Aliases: []string{"w"},
-				Name:    "words",
-				Value:   true,
-				Usage:   "count words",
-				Action: func(ctx context.Context, c *cli.Command, b bool) error {
-					fileName := c.Args().Get(0)
-					n, err := Count(fileName, Words)
-					if err != nil {
-						return err
-					}
-					fmt.Fprintln(os.Stdout, "\t", n, fileName)
-					return nil
-				},
-			},
-			&cli.BoolFlag{
-				Aliases: []string{"l"},
-				Name:    "lines",
-				Value:   true,
-				Usage:   "count lines",
-				Action: func(ctx context.Context, c *cli.Command, b bool) error {
-					fileName := c.Args().Get(0)
-					n, err := Count(fileName, Lines)
-					if err != nil {
-						return err
-					}
-					fmt.Fprintln(os.Stdout, "\t", n, fileName)
-					return nil
-				},
-			},
 			&cli.BoolFlag{
 				Aliases: []string{"b"},
 				Name:    "bytes",
@@ -75,8 +30,58 @@ func main() {
 					return nil
 				},
 			},
+			&cli.BoolFlag{
+				Aliases: []string{"c"},
+				Name:    "characters",
+				Usage:   "count characters",
+				Action: func(ctx context.Context, c *cli.Command, b bool) error {
+					fileName := c.Args().Get(0)
+					n, err := Count(fileName, Chars)
+					if err != nil {
+						return err
+					}
+					fmt.Fprintln(os.Stdout, "\t", n, fileName)
+					return nil
+				},
+			},
+			&cli.BoolFlag{
+				Aliases: []string{"w"},
+				Name:    "words",
+				Usage:   "count words",
+				Action: func(ctx context.Context, c *cli.Command, b bool) error {
+					fileName := c.Args().Get(0)
+					n, err := Count(fileName, Words)
+					if err != nil {
+						return err
+					}
+					fmt.Fprintln(os.Stdout, "\t", n, fileName)
+					return nil
+				},
+			},
+			&cli.BoolFlag{
+				Aliases: []string{"l"},
+				Name:    "lines",
+				Usage:   "count lines",
+				Action: func(ctx context.Context, c *cli.Command, b bool) error {
+					fileName := c.Args().Get(0)
+					n, err := Count(fileName, Lines)
+					if err != nil {
+						return err
+					}
+					fmt.Fprintln(os.Stdout, "\t", n, fileName)
+					return nil
+				},
+			},
 		},
-		Action: func(_ context.Context, cmd *cli.Command) error {
+		Action: func(_ context.Context, c *cli.Command) error {
+			if c.Bool("bytes") {
+				fileName := c.Args().Get(0)
+				n, err := Count(fileName, Bytes)
+				if err != nil {
+					return err
+				}
+				fmt.Fprintln(os.Stdout, "\t", n, fileName)
+			}
 			return nil
 		},
 	}
