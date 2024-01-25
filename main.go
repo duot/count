@@ -137,7 +137,6 @@ func main() {
 			},
 		},
 		Action: func(_ context.Context, cmd *cli.Command) error {
-			fmt.Printf("count %[1]v\n", cmd.String("type"))
 			return nil
 		},
 	}
