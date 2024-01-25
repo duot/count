@@ -4,68 +4,51 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/urfave/cli/v3"
 )
 
-func countBytes(fileName string) (int, error) {
-	bt, err := os.ReadFile(fileName)
-	if err != nil {
-		return 0, err
+// Counter is a function that takes a bufio.SplitFunc and count the resulting items
+type Counter func(io.Reader) (int, error)
+
+type TypeCounter func(io.Reader, bufio.SplitFunc) (int, error)
+
+func counter(f io.Reader, splitter bufio.SplitFunc) (int, error) {
+	s := bufio.NewScanner(f)
+	s.Split(splitter)
+	n := 0
+	for s.Scan() {
+		n++
 	}
-	return len(bt), nil
+	return n, nil
 }
 
-func countLines(fileName string) (int, error) {
+func Bytes(f io.Reader) (int, error) {
+	return counter(f, bufio.ScanBytes)
+}
+
+func Chars(f io.Reader) (int, error) {
+	return counter(f, bufio.ScanRunes)
+}
+
+func Words(f io.Reader) (int, error) {
+	return counter(f, bufio.ScanWords)
+}
+
+func Lines(f io.Reader) (int, error) {
+	return counter(f, bufio.ScanLines)
+}
+
+func Count(fileName string, counter Counter) (int, error) {
 	f, err := os.Open(fileName)
 	if err != nil {
 		return 0, err
 	}
 	defer f.Close()
 
-	s := bufio.NewScanner(f)
-	s.Split(bufio.ScanLines)
-
-	lines := 0
-	for s.Scan() {
-		lines++
-	}
-
-	return lines, nil
-}
-
-// countWords. Words are divided by consecutive spaces including newlines
-func countWords(fileName string) (int, error) {
-	f, err := os.Open(fileName)
-	if err != nil {
-		return 0, err
-	}
-	defer f.Close()
-
-	s := bufio.NewScanner(f)
-	s.Split(bufio.ScanWords)
-	lines := 0
-	for s.Scan() {
-		lines++
-	}
-	return lines, nil
-}
-
-func countCharacters(fileName string) (int, error) {
-	f, err := os.Open(fileName)
-	if err != nil {
-		return 0, err
-	}
-	defer f.Close()
-
-	s := bufio.NewScanner(f)
-	s.Split(bufio.ScanRunes)
-	chars := 0
-	for s.Scan() {
-		chars++
-	}
-	return chars, nil
+	return counter(f)
 }
 
 func main() {
@@ -82,11 +65,11 @@ func main() {
 				Usage:   "count characters",
 				Action: func(ctx context.Context, c *cli.Command, b bool) error {
 					fileName := c.Args().Get(0)
-					count, err := countCharacters(fileName)
+					n, err := Count(fileName, Chars)
 					if err != nil {
 						return err
 					}
-					fmt.Fprintln(os.Stdout, "\t", count, fileName)
+					fmt.Fprintln(os.Stdout, "\t", n, fileName)
 					return nil
 				},
 			},
@@ -97,11 +80,11 @@ func main() {
 				Usage:   "count words",
 				Action: func(ctx context.Context, c *cli.Command, b bool) error {
 					fileName := c.Args().Get(0)
-					count, err := countWords(fileName)
+					n, err := Count(fileName, Words)
 					if err != nil {
 						return err
 					}
-					fmt.Fprintln(os.Stdout, "\t", count, fileName)
+					fmt.Fprintln(os.Stdout, "\t", n, fileName)
 					return nil
 				},
 			},
@@ -112,11 +95,11 @@ func main() {
 				Usage:   "count lines",
 				Action: func(ctx context.Context, c *cli.Command, b bool) error {
 					fileName := c.Args().Get(0)
-					count, err := countLines(fileName)
+					n, err := Count(fileName, Lines)
 					if err != nil {
 						return err
 					}
-					fmt.Fprintln(os.Stdout, "\t", count, fileName)
+					fmt.Fprintln(os.Stdout, "\t", n, fileName)
 					return nil
 				},
 			},
@@ -127,11 +110,11 @@ func main() {
 				Usage:   "count bytes",
 				Action: func(ctx context.Context, c *cli.Command, b bool) error {
 					fileName := c.Args().Get(0)
-					count, err := countBytes(fileName)
+					n, err := Count(fileName, Bytes)
 					if err != nil {
 						return err
 					}
-					fmt.Fprintln(os.Stdout, "\t", count, fileName)
+					fmt.Fprintln(os.Stdout, "\t", n, fileName)
 					return nil
 				},
 			},
