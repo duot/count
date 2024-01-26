@@ -27,9 +27,9 @@ GLOBAL OPTIONS:
    --version, -v     print the version (default: false)
 ```
 
-## Build
+## Install
 
-Run `go build` and `do install` to install on the local go bin.
+Run `go install github.com/duot/count@latest`.
 
 ## License
 
